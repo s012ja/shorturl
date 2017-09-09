@@ -1,0 +1,21 @@
+<html>
+<head>
+<title>Short URL</title>
+<link rel="shortcut icon" href="http://c1.img.netmarble.kr/web/2005/img/common/main/netmarblebi_110701.ico">
+<body>
+{% if not short_url %}
+<form action="" method="post">
+    <div>
+        <label for="originurl">Input URL:</label>
+        <input type="url" name="originurl" size="60"/>
+        <button type="submit">generate short url</button>
+    </div>
+</form>
+{% else %}
+<div>
+Short URL: <a href="{{short_url}}"> {{short_url}}</a>
+</div>
+{% endif %}
+</body>
+</head>
+</html>

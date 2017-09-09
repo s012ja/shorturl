@@ -1,0 +1,48 @@
+<html>
+<head>
+<title>Short URL List</title>
+<link rel="shortcut icon" href="http://c1.img.netmarble.kr/web/2005/img/common/main/netmarblebi_110701.ico">
+<style>
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+</style>
+<body>
+{% if not rows %}
+not found
+{% else %}
+<table>
+<tr>
+	<td>Short URI</td>
+	<td>Origin URL</td>
+	<td>Delete</td>
+</tr>
+{% for row in rows %}
+<tr>
+	<td>{{ row[0] }}</td>
+	<td>{{ row[1] }}</td>
+	<form action="" method="post">
+	<td>
+		<input type=hidden value="{{ row[0] }}" name="delete"></input>
+		<button type="submit">delete</button>
+	</td>
+	</form>
+</tr>
+{% endfor %}
+</table>
+{% endif %}
+</body>
+</head>
+</html>
