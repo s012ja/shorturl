@@ -23,21 +23,12 @@ DROP TABLE IF EXISTS `shorturl`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `shorturl` (
-  `short_url` varchar(5) NOT NULL,
-  `origin_url` varchar(255) NOT NULL,
+  `short_url` varchar(5) COLLATE utf8_bin NOT NULL,
+  `origin_url` varchar(255) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`short_url`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `shorturl`
---
-
-LOCK TABLES `shorturl` WRITE;
-/*!40000 ALTER TABLE `shorturl` DISABLE KEYS */;
-/*!40000 ALTER TABLE `shorturl` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -47,4 +38,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-09-09 15:32:54
+-- Dump completed on 2017-09-09 16:11:27
