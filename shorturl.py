@@ -6,6 +6,19 @@ import pymysql
 
 app = Flask(__name__)
 
+connection_config = {
+    'host': 'localhost',
+    'port': 3306,
+    'user': 'root',
+    'passwd': 'test1234',
+    'db':'shorturl'
+    }
+
+app_config = {
+    'host': '0.0.0.0',
+    'port': 80
+    }
+
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -13,7 +26,7 @@ def index():
         originurl = request.form['originurl']
         shorturi = ''.join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for _ in range(5))
         
-        conn = pymysql.connect(host='localhost',port=3306, user='root', password='test1234', db='shorturl')
+        conn = pymysql.connect(**connection_config)
         try:
             with conn.cursor() as curs:
                 sql = 'insert into shorturl (short_url,origin_url) values (%s, %s)'
@@ -49,7 +62,7 @@ def redirect_shorturl(short_url):
 
 @app.route("/getlist", methods=['GET', 'POST'])
 def get_list():
-    conn = pymysql.connect(host='localhost',port=3306, user='root', password='test1234', db='shorturl')
+    conn = pymysql.connect(**connection_config)
     try:
         if request.method == 'POST':
             with conn.cursor() as curs:
@@ -73,4 +86,4 @@ if __name__ == "__main__":
     handler = logging.FileHandler('access.log')
     logger.addHandler(handler)
     app.logger.addHandler(handler)
-    app.run(host='0.0.0.0', port = '80')
+    app.run(**app_config)
