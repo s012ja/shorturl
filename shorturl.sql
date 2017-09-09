@@ -16,6 +16,14 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Current Database: `shorturl`
+--
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `shorturl` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
+
+USE `shorturl`;
+
+--
 -- Table structure for table `shorturl`
 --
 
@@ -29,6 +37,15 @@ CREATE TABLE `shorturl` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `shorturl`
+--
+
+LOCK TABLES `shorturl` WRITE;
+/*!40000 ALTER TABLE `shorturl` DISABLE KEYS */;
+/*!40000 ALTER TABLE `shorturl` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -38,4 +55,4 @@ CREATE TABLE `shorturl` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-09-09 16:11:27
+-- Dump completed on 2017-09-09 19:13:36
