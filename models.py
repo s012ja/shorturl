@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-class shorturl(db.Model):
+class ShortUrl(db.Model):
     __tablename__ = 'shorturl'
     __table_args__ = {'mysql_collate': 'utf8_bin'}
 

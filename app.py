@@ -1,16 +1,12 @@
 from flask import Flask, redirect, render_template, request
 import string
 import random
+import logging
+from logging.handlers import RotatingFileHandler
 from models import *
 
 app = Flask(__name__)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:test1234@localhost/shorturl?charset=utf8'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app_config = {
-    'host': '0.0.0.0',
-    'port': 8080
-    }
+app.config.from_pyfile('app.cfg')
 
 db.init_app(app)
 
@@ -25,13 +21,14 @@ def index():
         originurl = request.form['originurl']
         shorturi = ''.join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for _ in range(5))
         
-        shorturl_row = shorturl(shorturi,originurl)
+        shorturl_row = ShortUrl(shorturi,originurl)
         
         db.session.add(shorturl_row)
         db.session.commit()
         
         short_url = request.scheme+'://'+request.headers['Host']+'/'+ shorturi 
         
+        app.logger.info('Created Shorturl "%s","%s"' , shorturi,originurl)
         return  render_template('index.html', short_url = short_url)
      
     return render_template('index.html')
@@ -39,11 +36,13 @@ def index():
 @app.route('/<short_url>')
 def redirect_shorturl(short_url):
     
-    row = shorturl.query.filter_by(short_url=short_url).first()
+    row = ShortUrl.query.filter_by(short_url=short_url).first()
     
     if row is not None:
         redirect_url = row.origin_url
+        app.logger.info('Redirect to "%s"' , row.origin_url)
     else:
+        app.logger.warning('Redirect Failed - ShortUrl not found "%s"', short_url)
         redirect_url = "/"
           
     return redirect(redirect_url)
@@ -53,18 +52,31 @@ def get_list():
         
     if request.method == 'POST':
         del_shorturl = request.form['delete']
-        
-        delete_url = shorturl.query.filter_by(short_url=del_shorturl).first()
+        delete_url = ShortUrl.query.filter_by(short_url=del_shorturl).first()
         if delete_url is None:
+            app.logger.error('ShortUrl Delete Failed - ShortUrl not found : "%s"', del_shorturl )
             pass
         else:
             db.session.delete(delete_url)
             db.session.commit()
-            
-    rows = shorturl.query.all()
+            app.logger.info('ShortUrl Deleted : "%s","%s"' , del_shorturl, delete_url.origin_url)
+
+    rows = ShortUrl.query.all()
     
     return render_template('list2.html', rows=rows)
     
 if __name__ == "__main__":
-    app.run(**app_config)
+    
+    log_fomatter = logging.Formatter('[%(levelname)s|%(filename)s:%(lineno)s,%(funcName)s] %(asctime)s > %(message)s')
+    
+    applog_handler = RotatingFileHandler(app.config["APP_LOGFILE"], maxBytes=app.config["APP_LOGSIZE"], backupCount=app.config["APP_LOGBACKUPCOUNT"])
+    applog_handler.setFormatter(log_fomatter)
+    app.logger.setLevel(logging.DEBUG)
+    app.logger.addHandler(applog_handler)
+    
+    access_logger = logging.getLogger('werkzeug')
+    access_handler = RotatingFileHandler(app.config["ACCESS_LOGFILE"], maxBytes=app.config["ACCESS_LOGSIZE"], backupCount=app.config["ACCESS_LOGBACKUPCOUNT"])
+    access_logger.addHandler(access_handler)
+    
+    app.run(host = app.config["HOST"],port = app.config["PORT"])
 

@@ -15,7 +15,8 @@ Vagrant.configure("2") do |config|
 		debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password '$mysql_pass
 		apt-get update
 		apt-get install -y mysql-server python-pip git
-		pip install flask pymysql
+		pip install --upgrade pip
+		pip install flask pymysql flask-sqlalchemy
 		git clone https://github.com/s012ja/shorturl.git /vagrant/shorturl/
 		mysql -uroot -p$mysql_pass < /vagrant/shorturl/shorturl.sql
 	  SHELL
