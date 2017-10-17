@@ -6,7 +6,7 @@ from logging.handlers import RotatingFileHandler
 from models import *
 
 app = Flask(__name__)
-app.config.from_pyfile('../config/app.cfg')
+app.config.from_pyfile('config/app.cfg')
 
 db.init_app(app)
 
