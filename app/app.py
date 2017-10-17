@@ -49,7 +49,8 @@ def redirect_shorturl(short_url):
         if row:
             redirect_url = row.origin_url
             app.logger.info('Redirect url from db "%s"' , row.origin_url)
-            r.set(short_url,row.origin_url)
+            r.set(short_url,row.origin_url,ex=3600)
+            app.logger.info('Cached shortrul "%s","%s"' , short_url,row.origin_url)
         else:
             app.logger.warning('Redirect Failed - ShortUrl not found "%s"', short_url)
             redirect_url = "/"
