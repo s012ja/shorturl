@@ -1,5 +1,6 @@
 from flask import Flask, redirect, render_template, request
 import string
+import redis
 import random
 import logging
 from logging.handlers import RotatingFileHandler
@@ -35,15 +36,23 @@ def index():
 
 @app.route('/<short_url>')
 def redirect_shorturl(short_url):
+    r = redis.StrictRedis(host='localhost', port=6379, db=0)
     
-    row = ShortUrl.query.filter_by(short_url=short_url).first()
+    cachedurl = r.get(short_url)
     
-    if row is not None:
-        redirect_url = row.origin_url
-        app.logger.info('Redirect to "%s"' , row.origin_url)
-    else:
-        app.logger.warning('Redirect Failed - ShortUrl not found "%s"', short_url)
-        redirect_url = "/"
+    if cachedurl:
+        redirect_url = cachedurl
+        app.logger.info('Redirect url from cache "%s"', short_url)
+    else:  
+        row = ShortUrl.query.filter_by(short_url=short_url).first()
+        
+        if row:
+            redirect_url = row.origin_url
+            app.logger.info('Redirect url from db "%s"' , row.origin_url)
+            r.set(short_url,row.origin_url)
+        else:
+            app.logger.warning('Redirect Failed - ShortUrl not found "%s"', short_url)
+            redirect_url = "/"
           
     return redirect(redirect_url)
 
